@@ -7,7 +7,6 @@ use PhpAmqpLib\Connection\AbstractConnection as LibConnection;
 use AMQPAL\Adapter\AdapterInterface;
 use AMQPAL\Adapter\Exception;
 use AMQPAL\Adapter\PhpAmqpLib\Options\ConnectionOptions;
-use AMQPAL\Options;
 
 class PhpAmqpLib implements AdapterInterface
 {

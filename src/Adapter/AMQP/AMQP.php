@@ -5,7 +5,6 @@ namespace AMQPAL\Adapter\AMQP;
 use AMQPAL\Adapter\AMQP\Options\ConnectionOptions;
 use AMQPAL\Adapter\AdapterInterface;
 use AMQPAL\Adapter\Exception;
-use AMQPAL\Options;
 
 /**
  * Class AMQP
