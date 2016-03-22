@@ -19,7 +19,7 @@
   ],
   "require": {
     "php": "^5.5 || ^7.0",
-    "php-amqplib/php-amqplib": "^2.6"
+    "php-amqplib/php-amqplib": ">=2.6.1,<3.0.0"
   },
   "suggest": {
     "ext-amqp": "Required for better performance in message consuming"
