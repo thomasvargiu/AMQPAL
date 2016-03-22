@@ -26,10 +26,10 @@
   },
   "require-dev": {
     "ext-amqp": "*",
-    "phpunit/phpunit": "@stable",
-    "squizlabs/php_codesniffer": "@stable",
-    "phpmd/phpmd" : "@stable",
-    "fabpot/php-cs-fixer": "@stable"
+    "phpunit/phpunit": "^5.2",
+    "squizlabs/php_codesniffer": "^2.5",
+    "phpmd/phpmd" : "^2.4",
+    "fabpot/php-cs-fixer": "^1.11"
   },
   "autoload": {
     "psr-4": {
