@@ -42,7 +42,7 @@ $queueOptions = new Options\QueueOptions([
 $queue = $channel->createQueue($queueOptions);
 
 $queue->declareQueue();
-$queue->bind('exchange-name);
+$queue->bind('exchange-name');
 
 $message = $queue->get();
 
