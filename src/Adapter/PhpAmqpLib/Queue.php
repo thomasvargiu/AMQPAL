@@ -38,10 +38,6 @@ class Queue implements QueueInterface
      */
     public function declareQueue()
     {
-        if (!$this->options->isDeclare()) {
-            return $this;
-        }
-
         $this->channel->getResource()->queue_declare(
             $this->options->getName(),
             $this->options->isPassive(),

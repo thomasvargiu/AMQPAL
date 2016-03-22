@@ -14,7 +14,6 @@ class ExchangeOptionsTest extends \PHPUnit_Framework_TestCase
             'auto_delete' => false,
             'internal' => true,
             'no_wait' => true,
-            'declare' => true,
             'arguments' => [
                 'argument1' => 'value1',
             ],
@@ -29,7 +28,6 @@ class ExchangeOptionsTest extends \PHPUnit_Framework_TestCase
         static::assertEquals($configuration['auto_delete'], $options->isAutoDelete());
         static::assertEquals($configuration['internal'], $options->isInternal());
         static::assertEquals($configuration['no_wait'], $options->isNoWait());
-        static::assertEquals($configuration['declare'], $options->isDeclare());
         static::assertEquals($configuration['arguments'], $options->getArguments());
     }
 }

@@ -108,26 +108,6 @@ class Exchange implements ExchangeInterface
      */
     public function declareExchange()
     {
-        $this->declareSingleExchange($this->options);
-
-        return $this;
-    }
-
-    /**
-     * Declare a new exchange on the broker.
-     *
-     * @param Options\ExchangeOptions $options
-     * @return $this
-     * @throws \AMQPExchangeException
-     * @throws \AMQPChannelException
-     * @throws \AMQPConnectionException
-     */
-    protected function declareSingleExchange(Options\ExchangeOptions $options)
-    {
-        if (!$options->isDeclare()) {
-            return $this;
-        }
-
         $this->resource->declareExchange();
 
         return $this;

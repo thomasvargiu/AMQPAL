@@ -2,7 +2,6 @@
 
 namespace AMQPAL\Adapter\AMQP;
 
-use Prophecy\Prophecy\MethodProphecy;
 use AMQPAL\Options;
 use Prophecy\Argument;
 
@@ -49,31 +48,7 @@ class ExchangeTest extends \PHPUnit_Framework_TestCase
         $resource->setName('exchangeName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
 
-        $options->isDeclare()->willReturn(true);
-
         $resource->declareExchange()->shouldBeCalled();
-
-        $exchange = new Exchange();
-        $exchange->setResource($resource->reveal());
-        $exchange->setOptions($options->reveal());
-
-        static::assertSame($exchange, $exchange->declareExchange());
-    }
-
-    public function testDeclareExchangeWithNoDeclare()
-    {
-        $options = $this->getDefaultOptionsProphet();
-        $resource = $this->prophesize(\AMQPExchange::class);
-
-        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_INTERNAL | AMQP_NOWAIT)
-            ->shouldBeCalled();
-        $resource->setType('exchangeType')->shouldBeCalled();
-        $resource->setName('exchangeName')->shouldBeCalled();
-        $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
-
-        $options->isDeclare()->willReturn(false);
-
-        $resource->declareExchange()->shouldNotBeCalled();
 
         $exchange = new Exchange();
         $exchange->setResource($resource->reveal());
@@ -114,7 +89,6 @@ class ExchangeTest extends \PHPUnit_Framework_TestCase
         $resource->setType('exchangeType')->shouldBeCalled();
         $resource->setName('exchangeName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
-        $options->isDeclare()->willReturn(false);
 
         $resource->delete('exchangeName', $flags)->shouldBeCalled();
 
@@ -137,7 +111,6 @@ class ExchangeTest extends \PHPUnit_Framework_TestCase
         $resource->setType('exchangeType')->shouldBeCalled();
         $resource->setName('exchangeName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
-        $options->isDeclare()->willReturn(false);
 
         $resource->bind('exchange2bindName', 'routingKey', $arguments)->shouldBeCalled();
 
@@ -160,7 +133,6 @@ class ExchangeTest extends \PHPUnit_Framework_TestCase
         $resource->setType('exchangeType')->shouldBeCalled();
         $resource->setName('exchangeName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
-        $options->isDeclare()->willReturn(false);
 
         $resource->unbind('exchange2bindName', 'routingKey', $arguments)->shouldBeCalled();
 
@@ -184,7 +156,6 @@ class ExchangeTest extends \PHPUnit_Framework_TestCase
         $resource->setType('exchangeType')->shouldBeCalled();
         $resource->setName('exchangeName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
-        $options->isDeclare()->willReturn(false);
 
         $resource->publish($message, $routingKey, $flags, $attributes)->shouldBeCalled();
 

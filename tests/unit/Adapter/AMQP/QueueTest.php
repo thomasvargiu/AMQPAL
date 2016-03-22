@@ -36,7 +36,6 @@ class QueueTest extends \PHPUnit_Framework_TestCase
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
 
-
         $queue = new Queue();
         $queue->setResource($resource->reveal());
 
@@ -54,30 +53,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
 
-        $options->isDeclare()->willReturn(true);
-
         $resource->declareQueue()->shouldBeCalled();
-
-        $exchange = new Queue();
-        $exchange->setResource($resource->reveal());
-        $exchange->setOptions($options->reveal());
-
-        static::assertSame($exchange, $exchange->declareQueue());
-    }
-
-    public function testDeclareQueueWithNoDeclare()
-    {
-        $options = $this->getDefaultOptionsProphet();
-        $resource = $this->prophesize(\AMQPQueue::class);
-
-        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE | AMQP_NOWAIT)
-            ->shouldBeCalled();
-        $resource->setName('queueName')->shouldBeCalled();
-        $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
-
-        $options->isDeclare()->willReturn(false);
-
-        $resource->declareQueue()->shouldNotBeCalled();
 
         $exchange = new Queue();
         $exchange->setResource($resource->reveal());
@@ -98,7 +74,6 @@ class QueueTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
-        $options->isDeclare()->willReturn(false);
 
         $resource->delete($flags)->shouldBeCalled();
 
@@ -120,7 +95,6 @@ class QueueTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
-        $options->isDeclare()->willReturn(false);
 
         $resource->bind('exchangeName', 'routingKey', $arguments)->shouldBeCalled();
 
@@ -142,7 +116,6 @@ class QueueTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
-        $options->isDeclare()->willReturn(false);
 
         $resource->unbind('exchangeName', 'routingKey', $arguments)->shouldBeCalled();
 
@@ -162,7 +135,6 @@ class QueueTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
-        $options->isDeclare()->willReturn(false);
 
         $resource->ack('deliveryTag', AMQP_NOPARAM)->shouldBeCalled();
 
@@ -182,7 +154,6 @@ class QueueTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
-        $options->isDeclare()->willReturn(false);
 
         $resource->ack('deliveryTag', AMQP_MULTIPLE)->shouldBeCalled();
 
@@ -202,7 +173,6 @@ class QueueTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
-        $options->isDeclare()->willReturn(false);
 
         $resource->nack('deliveryTag', AMQP_NOPARAM)->shouldBeCalled();
 
@@ -222,7 +192,6 @@ class QueueTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
-        $options->isDeclare()->willReturn(false);
 
         $resource->nack('deliveryTag', AMQP_REQUEUE)->shouldBeCalled();
 
@@ -242,7 +211,6 @@ class QueueTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
-        $options->isDeclare()->willReturn(false);
 
         $resource->nack('deliveryTag', AMQP_MULTIPLE)->shouldBeCalled();
 
@@ -262,7 +230,6 @@ class QueueTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
-        $options->isDeclare()->willReturn(false);
 
         $resource->nack('deliveryTag', AMQP_REQUEUE | AMQP_MULTIPLE)->shouldBeCalled();
 
@@ -282,7 +249,6 @@ class QueueTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
-        $options->isDeclare()->willReturn(false);
 
         $resource->reject('deliveryTag', AMQP_NOPARAM)->shouldBeCalled();
 
@@ -302,7 +268,6 @@ class QueueTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
-        $options->isDeclare()->willReturn(false);
 
         $resource->reject('deliveryTag', AMQP_REQUEUE)->shouldBeCalled();
 
@@ -322,7 +287,6 @@ class QueueTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
-        $options->isDeclare()->willReturn(false);
 
         $resource->purge()->shouldBeCalled();
 
@@ -342,7 +306,6 @@ class QueueTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
-        $options->isDeclare()->willReturn(false);
 
         $resource->cancel('')->shouldBeCalled();
 

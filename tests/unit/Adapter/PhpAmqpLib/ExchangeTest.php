@@ -22,9 +22,7 @@ class ExchangeTest extends \PHPUnit_Framework_TestCase
 
     public function testDeclareExchange()
     {
-        /** @var \Prophecy\Prophecy\ObjectProphecy|AMQPChannel $adapterChannel */
         $adapterChannel = $this->prophesize(AMQPChannel::class);
-        /** @var \Prophecy\Prophecy\ObjectProphecy|Channel $channel */
         $channel = $this->prophesize(Channel::class);
         $options = $this->getDefaultOptionsProphet();
 
@@ -40,8 +38,6 @@ class ExchangeTest extends \PHPUnit_Framework_TestCase
             ['arg1' => 'value1']
         )->shouldBeCalled();
 
-        $options->isDeclare()->willReturn(true);
-
         $exchange = new Exchange();
         $exchange->setChannel($channel->reveal());
         $exchange->setOptions($options->reveal());
@@ -51,15 +47,11 @@ class ExchangeTest extends \PHPUnit_Framework_TestCase
 
     public function testDeclareExchangeWithNoDeclare()
     {
-        /** @var \Prophecy\Prophecy\ObjectProphecy|AMQPChannel $adapterChannel */
         $adapterChannel = $this->prophesize(AMQPChannel::class);
-        /** @var \Prophecy\Prophecy\ObjectProphecy|Channel $channel */
         $channel = $this->prophesize(Channel::class);
         $options = $this->getDefaultOptionsProphet();
 
         $channel->getResource()->willReturn($adapterChannel);
-
-        $options->isDeclare()->willReturn(false);
 
         $exchange = new Exchange();
         $exchange->setChannel($channel->reveal());
@@ -69,7 +61,7 @@ class ExchangeTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \Prophecy\Prophecy\ObjectProphecy
+     * @return \Prophecy\Prophecy\ObjectProphecy|Options\ExchangeOptions
      */
     protected function getDefaultOptionsProphet()
     {
@@ -92,13 +84,9 @@ class ExchangeTest extends \PHPUnit_Framework_TestCase
      */
     public function testDelete($ifUnused, $noWait)
     {
-        /** @var \Prophecy\Prophecy\ObjectProphecy|AMQPChannel $adapterChannel */
         $adapterChannel = $this->prophesize(AMQPChannel::class);
-        /** @var \Prophecy\Prophecy\ObjectProphecy|Channel $channel */
         $channel = $this->prophesize(Channel::class);
         $options = $this->getDefaultOptionsProphet();
-
-        $options->isDeclare()->willReturn(false);
 
         $adapterChannel->exchange_delete('exchangeName', $ifUnused, $noWait)->shouldBeCalled();
         $channel->getResource()->willReturn($adapterChannel);
@@ -113,14 +101,10 @@ class ExchangeTest extends \PHPUnit_Framework_TestCase
     public function testBind()
     {
         $arguments = ['arg2' => 'value2'];
-
-        /** @var \Prophecy\Prophecy\ObjectProphecy|AMQPChannel $adapterChannel */
         $adapterChannel = $this->prophesize(AMQPChannel::class);
-        /** @var \Prophecy\Prophecy\ObjectProphecy|Channel $channel */
+
         $channel = $this->prophesize(Channel::class);
         $options = $this->getDefaultOptionsProphet();
-
-        $options->isDeclare()->willReturn(false);
 
         $adapterChannel->exchange_bind('exchangeName', 'exchange2bindName', 'routingKey', false, $arguments)
             ->shouldBeCalled();
@@ -137,13 +121,10 @@ class ExchangeTest extends \PHPUnit_Framework_TestCase
     {
         $arguments = ['arg2' => 'value2'];
 
-        /** @var \Prophecy\Prophecy\ObjectProphecy|AMQPChannel $adapterChannel */
         $adapterChannel = $this->prophesize(AMQPChannel::class);
-        /** @var \Prophecy\Prophecy\ObjectProphecy|Channel $channel */
+
         $channel = $this->prophesize(Channel::class);
         $options = $this->getDefaultOptionsProphet();
-
-        $options->isDeclare()->willReturn(false);
 
         $adapterChannel->exchange_bind('exchangeName', 'exchange2bindName', '', false, $arguments)
             ->shouldBeCalled();
@@ -160,13 +141,10 @@ class ExchangeTest extends \PHPUnit_Framework_TestCase
     {
         $arguments = ['arg2' => 'value2'];
 
-        /** @var \Prophecy\Prophecy\ObjectProphecy|AMQPChannel $adapterChannel */
         $adapterChannel = $this->prophesize(AMQPChannel::class);
-        /** @var \Prophecy\Prophecy\ObjectProphecy|Channel $channel */
+
         $channel = $this->prophesize(Channel::class);
         $options = $this->getDefaultOptionsProphet();
-
-        $options->isDeclare()->willReturn(false);
 
         $adapterChannel->exchange_unbind('exchangeName', 'exchange2bindName', 'routingKey', $arguments)
             ->shouldBeCalled();
@@ -183,13 +161,10 @@ class ExchangeTest extends \PHPUnit_Framework_TestCase
     {
         $arguments = ['arg2' => 'value2'];
 
-        /** @var \Prophecy\Prophecy\ObjectProphecy|AMQPChannel $adapterChannel */
         $adapterChannel = $this->prophesize(AMQPChannel::class);
-        /** @var \Prophecy\Prophecy\ObjectProphecy|Channel $channel */
+
         $channel = $this->prophesize(Channel::class);
         $options = $this->getDefaultOptionsProphet();
-
-        $options->isDeclare()->willReturn(false);
 
         $adapterChannel->exchange_unbind('exchangeName', 'exchange2bindName', '', $arguments)
             ->shouldBeCalled();
@@ -207,13 +182,11 @@ class ExchangeTest extends \PHPUnit_Framework_TestCase
      */
     public function testPublish($message, $routingKey, $mandatory, $immediate, $attributes)
     {
-        /** @var \Prophecy\Prophecy\ObjectProphecy|AMQPChannel $adapterChannel */
+
         $adapterChannel = $this->prophesize(AMQPChannel::class);
-        /** @var \Prophecy\Prophecy\ObjectProphecy|Channel $channel */
+
         $channel = $this->prophesize(Channel::class);
         $options = $this->getDefaultOptionsProphet();
-
-        $options->isDeclare()->willReturn(false);
 
         $adapterChannel->basic_publish(Argument::that(function (AMQPMessage $msgObject) use ($message) {
             return $msgObject instanceof AMQPMessage &&

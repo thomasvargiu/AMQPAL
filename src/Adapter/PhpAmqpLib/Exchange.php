@@ -47,32 +47,15 @@ class Exchange implements ExchangeInterface
      */
     public function declareExchange()
     {
-        $this->declareSingleExchange($this->options);
-
-        return $this;
-    }
-
-    /**
-     * Declare a new exchange on the broker.
-     *
-     * @param Options\ExchangeOptions $options
-     * @return $this
-     */
-    protected function declareSingleExchange(Options\ExchangeOptions $options)
-    {
-        if (!$options->isDeclare()) {
-            return $this;
-        }
-
         $this->channel->getResource()->exchange_declare(
-            $options->getName(),
-            $options->getType(),
-            $options->isPassive(),
-            $options->isDurable(),
-            $options->isAutoDelete(),
-            $options->isInternal(),
-            $options->isNoWait(),
-            $options->getArguments()
+            $this->options->getName(),
+            $this->options->getType(),
+            $this->options->isPassive(),
+            $this->options->isDurable(),
+            $this->options->isAutoDelete(),
+            $this->options->isInternal(),
+            $this->options->isNoWait(),
+            $this->options->getArguments()
         );
 
         return $this;

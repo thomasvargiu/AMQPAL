@@ -56,22 +56,8 @@ class QueueTest extends \PHPUnit_Framework_TestCase
             ['arg1' => 'value1']
         )->shouldBeCalled();
 
-        $options->isDeclare()->willReturn(true);
-
         $queue = new Queue();
         $queue->setChannel($channel->reveal());
-        $queue->setOptions($options->reveal());
-
-        static::assertSame($queue, $queue->declareQueue());
-    }
-
-    public function testDeclareQueueWithNoDeclare()
-    {
-        $options = $this->getDefaultOptionsProphet();
-
-        $options->isDeclare()->willReturn(false);
-
-        $queue = new Queue();
         $queue->setOptions($options->reveal());
 
         static::assertSame($queue, $queue->declareQueue());

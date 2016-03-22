@@ -41,10 +41,6 @@ class ExchangeOptions extends AbstractOptions
      */
     protected $noWait = false;
     /**
-     * @var bool
-     */
-    protected $declare = true;
-    /**
      * @var array
      */
     protected $arguments = [];
@@ -185,26 +181,6 @@ class ExchangeOptions extends AbstractOptions
     public function setNoWait($noWait)
     {
         $this->noWait = $noWait;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isDeclare()
-    {
-        return $this->declare;
-    }
-
-    /**
-     * @param bool $declare
-     *
-     * @return $this
-     */
-    public function setDeclare($declare)
-    {
-        $this->declare = $declare;
 
         return $this;
     }

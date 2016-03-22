@@ -43,10 +43,6 @@ class QueueOptions extends AbstractOptions
      * @var array
      */
     protected $routingKeys = [];
-    /**
-     * @var bool
-     */
-    protected $declare = true;
 
     /**
      * @return string
@@ -205,24 +201,6 @@ class QueueOptions extends AbstractOptions
     {
         $this->routingKeys = $routingKeys;
 
-        return $this;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isDeclare()
-    {
-        return $this->declare;
-    }
-
-    /**
-     * @param boolean $declare
-     * @return $this
-     */
-    public function setDeclare($declare)
-    {
-        $this->declare = $declare;
         return $this;
     }
 }
