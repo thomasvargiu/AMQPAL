@@ -9,11 +9,13 @@ php:
   - hhvm
 
 env:
+  - LIBRABBITMQ_VERSION=v0.5.2 PHP_AMQP_VERSION=v1.4.0
   matrix:
     - DEPENDENCIES=""
     - DEPENDENCIES="--prefer-lowest --prefer-stable"
 
 before_script:
+  - echo "extension = amqp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - composer self-update
   - composer update --prefer-source $DEPENDENCIES
 

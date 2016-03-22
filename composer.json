@@ -25,6 +25,7 @@
     "ext-amqp": "Required for better performance in message consuming"
   },
   "require-dev": {
+    "ext-amqp": "*",
     "phpunit/phpunit": "@stable",
     "squizlabs/php_codesniffer": "@stable",
     "phpmd/phpmd" : "@stable",
