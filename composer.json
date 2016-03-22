@@ -1,5 +1,5 @@
 {
-  "name": "thomasvargiu/AMQPAL",
+  "name": "thomasvargiu/amqpal",
   "description": "AMQP Abstraction Layer",
   "type": "library",
   "minimum-stability": "stable",
