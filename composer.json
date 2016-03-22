@@ -1,0 +1,43 @@
+{
+  "name": "thomasvargiu/AMQPAL",
+  "description": "AMQP Abstraction Layer",
+  "type": "library",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "homepage": "https://github.com/thomasvargiu/RabbitMqModule",
+  "keywords": [
+    "amqp",
+    "rabbitmq",
+    "messaging",
+    "queue"
+  ],
+  "authors": [
+    {
+      "name": "Thomas Vargiu",
+      "email": "tvargiu@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^5.5 || ^7.0",
+    "php-amqplib/php-amqplib": "^2.6"
+  },
+  "suggest": {
+    "ext-amqp": "Required for better performance in message consuming"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "@stable",
+    "squizlabs/php_codesniffer": "@stable",
+    "phpmd/phpmd" : "@stable",
+    "fabpot/php-cs-fixer": "@stable"
+  },
+  "autoload": {
+    "psr-4": {
+      "AMQPAL\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "AMQPAL\\": "tests/unit/"
+    }
+  }
+}
