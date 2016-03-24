@@ -22,12 +22,12 @@ cache:
   - $HOME/.composer/cache
 
 before_script:
-  - echo "extension = amqp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - composer self-update
   - composer update --prefer-source $DEPENDENCIES
   - docker-compose up -d
 
 script:
+  - echo "extension = amqp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - ./vendor/bin/phpunit --coverage-clover ./clover.xml
   - ./vendor/bin/phpcs --standard=PSR2 ./src/ ./tests/unit/
 
