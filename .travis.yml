@@ -15,24 +15,37 @@ env:
     - LIBRABBITMQ_VERSION=v0.5.2 PHP_AMQP_VERSION=v1.4.0
   matrix:
     - DEPENDENCIES=""
+    - DEPENDENCIES="" LIBRABBITMQ_VERSION=v0.7.0 PHP_AMQP_VERSION=v1.6.1
     - DEPENDENCIES="--prefer-lowest --prefer-stable"
 
 cache:
   directories:
-  - $HOME/.composer/cache
+    - $HOME/.composer/cache
 
 before_script:
+  # install librabbitmq C library (required by php-amqp)
+  - sh -c "git clone git://github.com/alanxz/rabbitmq-c.git"
+  - sh -c "cd rabbitmq-c && git checkout ${LIBRABBITMQ_VERSION}"
+  - sh -c "cd rabbitmq-c && cmake -DBUILD_EXAMPLES=No -DBUILD_TOOLS=No -DBUILD_TESTS=No ."
+  - sh -c "cd rabbitmq-c && make && sudo make install"
+  # install php-amqp extension
+  - sh -c "git clone git://github.com/pdezwart/php-amqp.git"
+  - sh -c "cd php-amqp && git checkout ${PHP_AMQP_VERSION}"
+  - sh -c "cd php-amqp && phpize && ./configure && make && sudo make install"
+  - echo "extension = amqp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - phpenv config-add tests/php-amqp.ini
   - composer self-update
   - composer update --prefer-source $DEPENDENCIES
   - docker-compose up -d
 
 script:
-  - echo php -v
-  - pecl install amqp-1.7.0alpha2
-  #- echo "extension = amqp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - ./vendor/bin/phpunit --coverage-clover ./clover.xml
   - ./vendor/bin/phpcs --standard=PSR2 ./src/ ./tests/unit/
 
 after_script:
   - if [ "$TRAVIS_PHP_VERSION" = '7.0' ] ; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover ./clover.xml; fi;
 
+addons:
+  apt:
+    packages:
+      - valgrind
