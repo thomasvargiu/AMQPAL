@@ -14,16 +14,24 @@ env:
   global:
     - LIBRABBITMQ_VERSION=v0.6.0 PHP_AMQP_VERSION=v1.7.0alpha2
   matrix:
-    - DEPENDENCIES=""
-    - DEPENDENCIES="--prefer-lowest --prefer-stable"
+    - DEPENDENCIES="" LIBRABBITMQ_VERSION=v0.6.0 PHP_AMQP_VERSION=v1.4.0
+    - DEPENDENCIES="--prefer-lowest --prefer-stable" LIBRABBITMQ_VERSION=v0.6.0 PHP_AMQP_VERSION=v1.4.0
+    - DEPENDENCIES="" LIBRABBITMQ_VERSION=v0.6.0 PHP_AMQP_VERSION=v1.7.0alpha2
+    - DEPENDENCIES="--prefer-lowest --prefer-stable" LIBRABBITMQ_VERSION=v0.6.0 PHP_AMQP_VERSION=v1.7.0alpha2
+
+matrix:
+  exclude:
+    - php: 7.0
+      env: DEPENDENCIES="" LIBRABBITMQ_VERSION=v0.6.0 PHP_AMQP_VERSION=v1.4.0
+    - php: 7.0
+      env: DEPENDENCIES="--prefer-lowest --prefer-stable" LIBRABBITMQ_VERSION=v0.6.0 PHP_AMQP_VERSION=v1.4.0
 
 cache:
   directories:
     - $HOME/.composer/cache
 
 before_script:
-  - sh provision/install_rabbitmq-c.sh ${LIBRABBITMQ_VERSION}
-  - sh provision/install_php-amqp.sh ${PHP_AMQP_VERSION}
+  - sh provision/install_deps-c.sh
   - echo "extension = amqp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - composer self-update
   - composer update --prefer-source $DEPENDENCIES
