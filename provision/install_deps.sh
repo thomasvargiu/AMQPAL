@@ -21,7 +21,8 @@ cd $HOME/rabbitmq-c
 git checkout ${LIBRABBITMQ_VERSION}
 
 git submodule init && git submodule update
-autoreconf -i && ./configure --prefix=$HOME/rabbitmq-c && make && make install
+#autoreconf -i && ./configure --prefix=$HOME/rabbitmq-c && make && make install
+autoreconf -i && ./configure && make && make install
 
 
 
@@ -41,4 +42,5 @@ fi
 
 cd $HOME/php-amqp
 git checkout ${PHP_AMQP_VERSION}
-phpize && ./configure --prefix=$HOME/php-amqp && make && sudo make install
+git submodule init && git submodule update
+phpize && ./configure --with-amqp && make && make install
