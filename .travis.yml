@@ -27,7 +27,9 @@ before_script:
   - docker-compose up -d
 
 script:
-  - echo "extension = amqp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - echo php -v
+  - pecl install amqp-1.7.0alpha2
+  #- echo "extension = amqp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - ./vendor/bin/phpunit --coverage-clover ./clover.xml
   - ./vendor/bin/phpcs --standard=PSR2 ./src/ ./tests/unit/
 
