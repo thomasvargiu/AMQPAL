@@ -4,9 +4,6 @@ set -e
 
 echo Installing rabbitmq-c ...
 
-
-#LIBRABBITMQ_VERSION=$1
-
 cd $HOME
 
 if [ ! -d "$HOME/rabbitmq-c" ]; then
@@ -21,14 +18,11 @@ cd $HOME/rabbitmq-c
 git checkout ${LIBRABBITMQ_VERSION}
 
 git submodule init && git submodule update
-#autoreconf -i && ./configure --prefix=$HOME/rabbitmq-c && make && make install
 autoreconf -i && ./configure && make && sudo make install
 
 
 
 echo Installing php-amqp ...
-
-#PHP_AMQP_VERSION=$1
 
 cd $HOME
 
