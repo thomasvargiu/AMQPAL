@@ -51,7 +51,8 @@ class MessageMapper
         $message->setContentEncoding($libMessage->getContentEncoding());
         $message->setType($libMessage->getType());
         $message->setDateTime(
-            (int)$libMessage->getTimestamp() ? (new \DateTime())->setTimestamp($libMessage->getTimestamp()) : null);
+            (int)$libMessage->getTimestamp() ? (new \DateTime())->setTimestamp($libMessage->getTimestamp()) : null
+        );
         $message->setPriority($libMessage->getPriority());
         $expiration = $libMessage->getExpiration();
         $message->setExpiration(!empty($expiration) ? new \DateTime($libMessage->getExpiration()) : null);

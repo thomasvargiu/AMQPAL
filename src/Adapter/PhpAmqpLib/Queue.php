@@ -298,7 +298,7 @@ class Queue implements QueueInterface
         $this->channel->getResource()
             ->basic_consume($queue, $consumerTag, $noLocal, $autoAck, $exclusive, false, $consumerCallback);
 
-        while(count($this->channel->getResource()->callbacks)) {
+        while (count($this->channel->getResource()->callbacks)) {
             $this->channel->getResource()->wait();
         }
 

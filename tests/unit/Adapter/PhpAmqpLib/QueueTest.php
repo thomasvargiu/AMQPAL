@@ -417,11 +417,12 @@ class QueueTest extends \PHPUnit_Framework_TestCase
             ->willReturn($libMessage->reveal());
 
         $adapterChannel->callbacks = ['foo', 'bar'];
-        $adapterChannel->wait()->shouldBeCalledTimes(count($adapterChannel->callbacks))->will(function() use ($adapterChannel) {
-            $callbacks = $adapterChannel->callbacks;
-            array_shift($callbacks);
-            $adapterChannel->callbacks = $callbacks;
-        });
+        $adapterChannel->wait()->shouldBeCalledTimes(count($adapterChannel->callbacks))
+            ->will(function () use ($adapterChannel) {
+                $callbacks = $adapterChannel->callbacks;
+                array_shift($callbacks);
+                $adapterChannel->callbacks = $callbacks;
+            });
 
         $channel->getResource()->willReturn($adapterChannel->reveal());
 
