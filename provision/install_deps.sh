@@ -22,7 +22,7 @@ git checkout ${LIBRABBITMQ_VERSION}
 
 git submodule init && git submodule update
 #autoreconf -i && ./configure --prefix=$HOME/rabbitmq-c && make && make install
-autoreconf -i && ./configure && make && make install
+autoreconf -i && ./configure && make && sudo make install
 
 
 
