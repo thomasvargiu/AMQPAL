@@ -16,7 +16,7 @@ abstract class AbstractAdapterTestSuite extends \PHPUnit_Framework_TestCase
      * @var array
      */
     protected $connectionOptions = [
-        'host' => '192.168.2.128',
+        'host' => 'localhost',
         'port' => 5679,
         'username' => 'guest',
         'password' => 'guest',
@@ -26,7 +26,7 @@ abstract class AbstractAdapterTestSuite extends \PHPUnit_Framework_TestCase
     /**
      * @var string
      */
-    protected $managementHost = '192.168.2.128';
+    protected $managementHost = 'localhost';
     /**
      * @var int
      */
