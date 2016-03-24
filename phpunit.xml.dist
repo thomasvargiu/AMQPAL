@@ -16,7 +16,7 @@
     </testsuite>
 
     <testsuite name="AMQPAL integration tests">
-        <directory suffix="Test.php">./tests/integration</directory>
+        <directory suffix="Test.php">./tests/functional</directory>
     </testsuite>
 
     <filter>

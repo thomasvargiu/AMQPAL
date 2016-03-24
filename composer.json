@@ -40,7 +40,7 @@
   "autoload-dev": {
     "psr-4": {
       "AMQPAL\\": "tests/unit/",
-      "AMQPAL\\IntegrationTest\\": "tests/integration/"
+      "AMQPAL\\FunctionalTest\\": "tests/functional/"
     }
   }
 }

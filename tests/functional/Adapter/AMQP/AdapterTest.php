@@ -1,9 +1,9 @@
 <?php
 
-namespace AMQPAL\IntegrationTest\Adapter\AMQP;
+namespace AMQPAL\FunctionalTest\Adapter\AMQP;
 
 use AMQPAL\Adapter\AMQP as Adapter;
-use AMQPAL\IntegrationTest\Adapter\AbstractAdapterTestSuite;
+use AMQPAL\FunctionalTest\Adapter\AbstractAdapterTestSuite;
 
 class AdapterAdapterTest extends AbstractAdapterTestSuite
 {

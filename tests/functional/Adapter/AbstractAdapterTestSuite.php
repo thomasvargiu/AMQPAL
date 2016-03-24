@@ -1,9 +1,9 @@
 <?php
 
-namespace AMQPAL\IntegrationTest\Adapter;
+namespace AMQPAL\FunctionalTest\Adapter;
 
 use AMQPAL\Adapter\AdapterInterface;
-use AMQPAL\IntegrationTest\Exception\TimeoutException;
+use AMQPAL\FunctionalTest\Exception\TimeoutException;
 use RabbitMq\ManagementApi\Client;
 use AMQPAL\Adapter\ChannelInterface;
 use AMQPAL\Adapter\Message;
