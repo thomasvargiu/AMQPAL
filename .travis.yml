@@ -33,7 +33,6 @@ before_script:
   - sh -c "cd php-amqp && git checkout ${PHP_AMQP_VERSION}"
   - sh -c "cd php-amqp && phpize && ./configure && make && sudo make install"
   - echo "extension = amqp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-  - phpenv config-add tests/php-amqp.ini
   - composer self-update
   - composer update --prefer-source $DEPENDENCIES
   - docker-compose up -d
