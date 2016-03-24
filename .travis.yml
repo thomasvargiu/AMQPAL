@@ -21,12 +21,10 @@ env:
 cache:
   directories:
     - $HOME/.composer/cache
-    - $HOME/rabbitmq-c
-    - $HOME/php-amqp
 
 before_script:
-  - sh provision/install_php-amqp.sh ${PHP_AMQP_VERSION}
   - sh provision/install_rabbitmq-c.sh ${LIBRABBITMQ_VERSION}
+  #- sh provision/install_php-amqp.sh ${PHP_AMQP_VERSION}
   - echo "extension = amqp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - composer self-update
   - composer update --prefer-source $DEPENDENCIES
