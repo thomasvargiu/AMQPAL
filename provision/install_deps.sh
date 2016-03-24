@@ -41,4 +41,4 @@ fi
 
 cd $HOME/php-amqp
 git checkout ${PHP_AMQP_VERSION}
-phpize && ./configure && make && sudo make install
+phpize && ./configure --prefix=$HOME/php-amqp && make && sudo make install
