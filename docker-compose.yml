@@ -1,0 +1,8 @@
+
+rabbitmq:
+  image: rabbitmq:3-management
+  environment:
+    RABBITMQ_DEFAULT_VHOST: test
+  ports:
+    - "5679:5672"
+    - "15679:15672"

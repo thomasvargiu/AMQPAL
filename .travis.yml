@@ -1,6 +1,9 @@
 language: php
 
-sudo: true
+sudo: required
+
+services:
+  - docker
 
 php:
   - 5.5
@@ -22,6 +25,7 @@ before_script:
   - echo "extension = amqp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - composer self-update
   - composer update --prefer-source $DEPENDENCIES
+  - docker-compose up -d
 
 script:
   - ./vendor/bin/phpunit --coverage-clover ./clover.xml
