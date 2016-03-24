@@ -44,7 +44,7 @@ class Queue implements QueueInterface
             $this->options->isDurable(),
             $this->options->isExclusive(),
             $this->options->isAutoDelete(),
-            $this->options->isNoWait(),
+            false,
             $this->options->getArguments()
         );
 
@@ -217,7 +217,7 @@ class Queue implements QueueInterface
     public function get($autoAck = false)
     {
         /** @var AMQPMessage $message */
-        $message = $this->channel->getResource()->basic_get($this->getOptions()->getName(), !$autoAck);
+        $message = $this->channel->getResource()->basic_get($this->getOptions()->getName(), $autoAck);
         if (!$message) {
             return null;
         }
@@ -265,14 +265,13 @@ class Queue implements QueueInterface
     }
 
     /**
-     * Consume messages from a queue.
+     * Consume messages from a queue (blocking function).
      *
      * @param string                          $consumerTag  A string describing this consumer. Used
      *                                                      for canceling subscriptions with cancel().
      * @param bool                            $noLocal
      * @param bool                            $autoAck
      * @param bool                            $exclusive
-     * @param bool                            $nowait       No wait for a reply.
      * @param callback|ConsumerInterface|null $callback     A callback function to which the
      *                                                      consumed message will be passed.
      * @return $this
@@ -282,7 +281,6 @@ class Queue implements QueueInterface
         $noLocal = false,
         $autoAck = false,
         $exclusive = false,
-        $nowait = false,
         callable $callback = null
     ) {
         if (null === $consumerTag) {
@@ -298,7 +296,11 @@ class Queue implements QueueInterface
         }
 
         $this->channel->getResource()
-            ->basic_consume($queue, $consumerTag, $noLocal, !$autoAck, $exclusive, $nowait, $consumerCallback);
+            ->basic_consume($queue, $consumerTag, $noLocal, $autoAck, $exclusive, false, $consumerCallback);
+
+        while(count($this->channel->getResource()->callbacks)) {
+            $this->channel->getResource()->wait();
+        }
 
         return $this;
     }

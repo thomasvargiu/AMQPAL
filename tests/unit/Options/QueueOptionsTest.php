@@ -12,13 +12,8 @@ class QueueOptionsTest extends \PHPUnit_Framework_TestCase
             'durable' => true,
             'auto_delete' => false,
             'exclusive' => true,
-            'no_wait' => true,
             'arguments' => [
                 'argument1' => 'value1',
-            ],
-            'routing_keys' => [
-                'routing1',
-                'routing2',
             ],
         ];
         $options = new QueueOptions();
@@ -29,8 +24,6 @@ class QueueOptionsTest extends \PHPUnit_Framework_TestCase
         static::assertEquals($configuration['durable'], $options->isDurable());
         static::assertEquals($configuration['auto_delete'], $options->isAutoDelete());
         static::assertEquals($configuration['exclusive'], $options->isExclusive());
-        static::assertEquals($configuration['no_wait'], $options->isNoWait());
         static::assertEquals($configuration['arguments'], $options->getArguments());
-        static::assertEquals($configuration['routing_keys'], $options->getRoutingKeys());
     }
 }

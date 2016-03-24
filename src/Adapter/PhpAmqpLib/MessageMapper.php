@@ -53,9 +53,12 @@ class MessageMapper
             $libMessage->has('content_encoding') ? $libMessage->get('content_encoding') : null
         );
         $message->setType($libMessage->has('type') ? $libMessage->get('type') : null);
-        $message->setDateTime((new DateTime())->setTimestamp($libMessage->get('timestamp')));
+        $message->setDateTime(
+            $libMessage->has('timestamp') ? (new DateTime())->setTimestamp($libMessage->get('timestamp')) : null
+        );
         $message->setPriority($libMessage->has('priority') ? $libMessage->get('priority') : null);
-        $message->setExpiration($libMessage->has('expiration') ? new \DateTime($libMessage->get('expiration')) : null);
+        $expiration = $libMessage->has('expiration') ? $libMessage->get('expiration') : null;
+        $message->setExpiration(!empty($expiration) ? new \DateTime($libMessage->get('expiration')) : null);
         $message->setUserId($libMessage->has('user_id') ? $libMessage->get('user_id') : null);
         $message->setAppId($libMessage->has('app_id') ? $libMessage->get('app_id') : null);
         $message->setMessageId($libMessage->has('message_id') ? $libMessage->get('message_id') : null);

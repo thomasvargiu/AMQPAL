@@ -26,6 +26,7 @@
   },
   "require-dev": {
     "ext-amqp": "*",
+    "richardfullmer/rabbitmq-management-api": "^1.0",
     "phpunit/phpunit": "^4.8 || ^5.2",
     "squizlabs/php_codesniffer": "^2.5",
     "phpmd/phpmd" : "^2.4",
@@ -38,7 +39,8 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "AMQPAL\\": "tests/unit/"
+      "AMQPAL\\": "tests/unit/",
+      "AMQPAL\\IntegrationTest\\": "tests/integration/"
     }
   }
 }

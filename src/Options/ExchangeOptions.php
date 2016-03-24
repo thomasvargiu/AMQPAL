@@ -37,6 +37,7 @@ class ExchangeOptions extends AbstractOptions
      */
     protected $internal = false;
     /**
+     * @todo: probably useless
      * @var bool
      */
     protected $noWait = false;

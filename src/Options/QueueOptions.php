@@ -32,17 +32,9 @@ class QueueOptions extends AbstractOptions
      */
     protected $exclusive = false;
     /**
-     * @var bool
-     */
-    protected $noWait = false;
-    /**
      * @var array
      */
     protected $arguments = [];
-    /**
-     * @var array
-     */
-    protected $routingKeys = [];
 
     /**
      * @return string
@@ -145,26 +137,6 @@ class QueueOptions extends AbstractOptions
     }
 
     /**
-     * @return bool
-     */
-    public function isNoWait()
-    {
-        return $this->noWait;
-    }
-
-    /**
-     * @param bool $noWait
-     *
-     * @return $this
-     */
-    public function setNoWait($noWait)
-    {
-        $this->noWait = $noWait;
-
-        return $this;
-    }
-
-    /**
      * @return array
      */
     public function getArguments()
@@ -180,26 +152,6 @@ class QueueOptions extends AbstractOptions
     public function setArguments(array $arguments)
     {
         $this->arguments = $arguments;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getRoutingKeys()
-    {
-        return $this->routingKeys;
-    }
-
-    /**
-     * @param array $routingKeys
-     *
-     * @return $this
-     */
-    public function setRoutingKeys(array $routingKeys)
-    {
-        $this->routingKeys = $routingKeys;
 
         return $this;
     }

@@ -15,7 +15,7 @@ class Message
      */
     protected $routingKey;
     /**
-     * @var string
+     * @var int
      */
     protected $deliveryTag;
     /**
@@ -96,7 +96,7 @@ class Message
     }
 
     /**
-     * @return string
+     * @return int
      */
     public function getDeliveryTag()
     {
@@ -244,7 +244,7 @@ class Message
     }
 
     /**
-     * @param string $deliveryTag
+     * @param int $deliveryTag
      * @return $this
      */
     public function setDeliveryTag($deliveryTag)
@@ -317,7 +317,7 @@ class Message
      * @param DateTime $dateTime
      * @return $this
      */
-    public function setDateTime(DateTime $dateTime)
+    public function setDateTime(DateTime $dateTime = null)
     {
         $this->dateTime = $dateTime;
         return $this;
@@ -337,7 +337,7 @@ class Message
      * @param DateTime $expiration
      * @return $this
      */
-    public function setExpiration(DateTime $expiration)
+    public function setExpiration(DateTime $expiration = null)
     {
         $this->expiration = $expiration;
         return $this;

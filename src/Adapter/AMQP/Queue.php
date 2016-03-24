@@ -75,9 +75,6 @@ class Queue implements QueueInterface
         if ($options->isExclusive()) {
             $flags |= AMQP_EXCLUSIVE;
         }
-        if ($options->isNoWait()) {
-            $flags |= AMQP_NOWAIT;
-        }
 
         $queue->setName($options->getName());
         $queue->setFlags($flags);
@@ -349,14 +346,13 @@ class Queue implements QueueInterface
     }
 
     /**
-     * Consume messages from a queue.
+     * Consume messages from a queue (blocking function).
      *
      * @param string                          $consumerTag  A string describing this consumer. Used
      *                                                      for canceling subscriptions with cancel().
      * @param bool                            $noLocal
      * @param bool                            $autoAck
      * @param bool                            $exclusive
-     * @param bool                            $nowait       No wait for a reply.
      * @param callback|ConsumerInterface|null $callback     A callback function to which the
      *                                                      consumed message will be passed.
      * @return $this
@@ -368,7 +364,6 @@ class Queue implements QueueInterface
         $noLocal = false,
         $autoAck = false,
         $exclusive = false,
-        $nowait = false,
         callable $callback = null
     ) {
         $consumerCallback = null;
@@ -386,9 +381,6 @@ class Queue implements QueueInterface
         }
         if ($exclusive) {
             $flags |= AMQP_EXCLUSIVE;
-        }
-        if ($nowait) {
-            $flags |= AMQP_NOWAIT;
         }
 
         $this->getResource()->consume($consumerCallback, $flags, $consumerTag);
