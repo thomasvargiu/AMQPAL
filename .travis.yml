@@ -31,7 +31,7 @@ cache:
     - $HOME/.composer/cache
 
 before_script:
-  - sh provision/install_deps-c.sh
+  - sh provision/install_deps.sh
   - echo "extension = amqp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - composer self-update
   - composer update --prefer-source $DEPENDENCIES
