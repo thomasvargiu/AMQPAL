@@ -20,6 +20,18 @@ class ExchangeTest extends \PHPUnit_Framework_TestCase
         static::assertSame($options->reveal(), $exchange->getOptions());
     }
 
+    public function testSetOptionsWithArray()
+    {
+        $options = ['name' => 'exchangeName', 'type' => 'exchangeType'];
+
+        $exchange = new Exchange();
+
+        static::assertSame($exchange, $exchange->setOptions($options));
+        $exchangeOptions = $exchange->getOptions();
+        static::assertInstanceOf(Options\ExchangeOptions::class, $exchangeOptions);
+        static::assertEquals('exchangeName', $exchangeOptions->getName());
+    }
+
     public function testDeclareExchange()
     {
         $adapterChannel = $this->prophesize(AMQPChannel::class);

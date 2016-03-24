@@ -33,12 +33,13 @@ class ConsumerCallback
 
     /**
      * @param AMQPEnvelope $message
+     * @return mixed
      * @throws \OutOfBoundsException
      */
     public function __invoke(AMQPEnvelope $message)
     {
         $convertedMessage = $this->getMessageMapper()->toMessage($message);
-        call_user_func($this->callback, $convertedMessage, $this->queue);
+        return call_user_func($this->callback, $convertedMessage, $this->queue);
     }
 
     /**

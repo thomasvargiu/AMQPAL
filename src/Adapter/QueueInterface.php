@@ -135,25 +135,23 @@ interface QueueInterface
     public function get($autoAck = false);
 
     /**
-     * Consume messages from a queue.
+     * Consume messages from a queue (blocking function).
      *
-     * @param string                          $consumerTag  A string describing this consumer. Used
-     *                                                      for canceling subscriptions with cancel().
+     * @param callback|ConsumerInterface|null $callback     A callback function to which the
+     *                                                      consumed message will be passed.
      * @param bool                            $noLocal
      * @param bool                            $autoAck
      * @param bool                            $exclusive
-     * @param bool                            $nowait       No wait for a reply.
-     * @param callback|ConsumerInterface|null $callback     A callback function to which the
-     *                                                      consumed message will be passed.
+     * @param string                          $consumerTag  A string describing this consumer. Used
+     *                                                      for canceling subscriptions with cancel().
      * @return $this
      */
     public function consume(
-        $consumerTag = null,
+        callable $callback = null,
         $noLocal = false,
         $autoAck = false,
         $exclusive = false,
-        $nowait = false,
-        callable $callback = null
+        $consumerTag = null
     );
 
     /**

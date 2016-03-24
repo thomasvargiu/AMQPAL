@@ -3,6 +3,7 @@
 namespace AMQPAL\Adapter\AMQP;
 
 use AMQPAL\Adapter\ChannelInterface;
+use AMQPAL\Exception;
 use AMQPAL\Options;
 
 /**
@@ -58,6 +59,16 @@ class Channel implements ChannelInterface
     }
 
     /**
+     * Check the channel connection.
+     *
+     * @return bool Indicates whether the channel is connected.
+     */
+    public function isConnected()
+    {
+        return $this->getResource()->isConnected();
+    }
+
+    /**
      * @return \AMQPChannel
      */
     public function getResource()
@@ -74,16 +85,6 @@ class Channel implements ChannelInterface
         $this->resource = $resource;
 
         return $this;
-    }
-
-    /**
-     * Check the channel connection.
-     *
-     * @return bool Indicates whether the channel is connected.
-     */
-    public function isConnected()
-    {
-        return $this->getResource()->isConnected();
     }
 
     /**
@@ -154,16 +155,6 @@ class Channel implements ChannelInterface
     }
 
     /**
-     * @param Connection $connection
-     * @return $this
-     */
-    public function setConnection(Connection $connection)
-    {
-        $this->connection = $connection;
-        return $this;
-    }
-
-    /**
      * Get the connection object in use
      *
      * @return Connection
@@ -171,6 +162,16 @@ class Channel implements ChannelInterface
     public function getConnection()
     {
         return $this->connection;
+    }
+
+    /**
+     * @param Connection $connection
+     * @return $this
+     */
+    public function setConnection(Connection $connection)
+    {
+        $this->connection = $connection;
+        return $this;
     }
 
     /**
@@ -187,13 +188,15 @@ class Channel implements ChannelInterface
     }
 
     /**
-     * @param Options\QueueOptions $options
-     * @param \AMQPQueue           $resource
+     * @param Options\QueueOptions|\Traversable|array $options
+     * @param \AMQPQueue                              $resource
      * @return Queue
      * @throws \AMQPConnectionException
      * @throws \AMQPQueueException
+     * @throws Exception\BadMethodCallException
+     * @throws Exception\InvalidArgumentException
      */
-    public function createQueue(Options\QueueOptions $options, $resource = null)
+    public function createQueue($options, $resource = null)
     {
         $queue = clone $this->queuePrototype;
 
@@ -210,13 +213,26 @@ class Channel implements ChannelInterface
     }
 
     /**
-     * @param Options\ExchangeOptions $options
-     * @param \AMQPExchange           $resource
+     * @return \AMQPQueue
+     * @throws \AMQPConnectionException
+     * @throws \AMQPQueueException
+     * @codeCoverageIgnore
+     */
+    protected function createQueueResource()
+    {
+        return new \AMQPQueue($this->getResource());
+    }
+
+    /**
+     * @param Options\ExchangeOptions|\Traversable|array $options
+     * @param \AMQPExchange                              $resource
      * @return Exchange
      * @throws \AMQPConnectionException
      * @throws \AMQPExchangeException
+     * @throws Exception\BadMethodCallException
+     * @throws Exception\InvalidArgumentException
      */
-    public function createExchange(Options\ExchangeOptions $options, $resource = null)
+    public function createExchange($options, $resource = null)
     {
         $exchange = clone $this->exchangePrototype;
 
@@ -226,21 +242,14 @@ class Channel implements ChannelInterface
             $exchange->setResource($this->createExchangeResource());
         }
 
+        if (!$options instanceof Options\ExchangeOptions) {
+            $options = new Options\ExchangeOptions($options);
+        }
+
         $exchange->setChannel($this);
         $exchange->setOptions($options);
 
         return $exchange;
-    }
-
-    /**
-     * @return \AMQPQueue
-     * @throws \AMQPConnectionException
-     * @throws \AMQPQueueException
-     * @codeCoverageIgnore
-     */
-    protected function createQueueResource()
-    {
-        return new \AMQPQueue($this->getResource());
     }
 
     /**

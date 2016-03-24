@@ -31,7 +31,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
         $options = $this->getDefaultOptionsProphet();
         $resource = $this->prophesize(\AMQPQueue::class);
 
-        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE | AMQP_NOWAIT)
+        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE)
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
@@ -43,12 +43,31 @@ class QueueTest extends \PHPUnit_Framework_TestCase
         static::assertSame($options->reveal(), $queue->getOptions());
     }
 
+    public function testSetOptionsWithArray()
+    {
+        $options = ['name' => 'queueName'];
+        $resource = $this->prophesize(\AMQPQueue::class);
+
+        $resource->setFlags(Argument::any())
+            ->shouldBeCalled();
+        $resource->setName('queueName')->shouldBeCalled();
+        $resource->setArguments([])->shouldBeCalled();
+
+        $queue = new Queue();
+        $queue->setResource($resource->reveal());
+
+        static::assertSame($queue, $queue->setOptions($options));
+        $queueOptions = $queue->getOptions();
+        static::assertInstanceOf(Options\QueueOptions::class, $queueOptions);
+        static::assertEquals('queueName', $queueOptions->getName());
+    }
+
     public function testDeclareQueue()
     {
         $options = $this->getDefaultOptionsProphet();
         $resource = $this->prophesize(\AMQPQueue::class);
 
-        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE | AMQP_NOWAIT)
+        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE)
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
@@ -70,7 +89,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
         $options = $this->getDefaultOptionsProphet();
         $resource = $this->prophesize(\AMQPQueue::class);
 
-        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE | AMQP_NOWAIT)
+        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE)
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
@@ -91,7 +110,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
         $options = $this->getDefaultOptionsProphet();
         $resource = $this->prophesize(\AMQPQueue::class);
 
-        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE | AMQP_NOWAIT)
+        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE)
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
@@ -112,7 +131,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
         $options = $this->getDefaultOptionsProphet();
         $resource = $this->prophesize(\AMQPQueue::class);
 
-        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE | AMQP_NOWAIT)
+        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE)
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
@@ -131,7 +150,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
         $options = $this->getDefaultOptionsProphet();
         $resource = $this->prophesize(\AMQPQueue::class);
 
-        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE | AMQP_NOWAIT)
+        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE)
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
@@ -150,7 +169,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
         $options = $this->getDefaultOptionsProphet();
         $resource = $this->prophesize(\AMQPQueue::class);
 
-        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE | AMQP_NOWAIT)
+        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE)
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
@@ -169,7 +188,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
         $options = $this->getDefaultOptionsProphet();
         $resource = $this->prophesize(\AMQPQueue::class);
 
-        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE | AMQP_NOWAIT)
+        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE)
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
@@ -188,7 +207,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
         $options = $this->getDefaultOptionsProphet();
         $resource = $this->prophesize(\AMQPQueue::class);
 
-        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE | AMQP_NOWAIT)
+        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE)
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
@@ -207,7 +226,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
         $options = $this->getDefaultOptionsProphet();
         $resource = $this->prophesize(\AMQPQueue::class);
 
-        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE | AMQP_NOWAIT)
+        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE)
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
@@ -226,7 +245,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
         $options = $this->getDefaultOptionsProphet();
         $resource = $this->prophesize(\AMQPQueue::class);
 
-        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE | AMQP_NOWAIT)
+        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE)
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
@@ -245,7 +264,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
         $options = $this->getDefaultOptionsProphet();
         $resource = $this->prophesize(\AMQPQueue::class);
 
-        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE | AMQP_NOWAIT)
+        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE)
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
@@ -264,7 +283,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
         $options = $this->getDefaultOptionsProphet();
         $resource = $this->prophesize(\AMQPQueue::class);
 
-        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE | AMQP_NOWAIT)
+        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE)
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
@@ -283,7 +302,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
         $options = $this->getDefaultOptionsProphet();
         $resource = $this->prophesize(\AMQPQueue::class);
 
-        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE | AMQP_NOWAIT)
+        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE)
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
@@ -302,7 +321,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
         $options = $this->getDefaultOptionsProphet();
         $resource = $this->prophesize(\AMQPQueue::class);
 
-        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE | AMQP_NOWAIT)
+        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE)
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
@@ -322,7 +341,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
         $resource = $this->prophesize(\AMQPQueue::class);
         $messageMapper = $this->prophesize(MessageMapper::class);
 
-        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE | AMQP_NOWAIT)
+        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE)
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
@@ -345,7 +364,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
 
         $messageMapper->toMessage(Argument::any())->shouldNotBeCalled();
 
-        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE | AMQP_NOWAIT)
+        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE)
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
@@ -370,7 +389,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
 
         $messageMapper->toMessage($libMessage->reveal())->shouldBeCalled()->willReturn($message->reveal());
 
-        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE | AMQP_NOWAIT)
+        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE)
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
@@ -394,7 +413,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
         $libMessage = $this->prophesize(\AMQPEnvelope::class);
         $messageMapper = $this->prophesize(MessageMapper::class);
 
-        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE | AMQP_NOWAIT)
+        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE)
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
@@ -412,7 +431,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
             
         };
 
-        $ret = $queue->consume('consumerTag', false, false, false, false, $callback);
+        $ret = $queue->consume($callback, false, false, false, 'consumerTag');
 
         static::assertSame($queue, $ret);
     }
@@ -427,7 +446,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
         $libMessage = $this->prophesize(\AMQPEnvelope::class);
         $messageMapper = $this->prophesize(MessageMapper::class);
 
-        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE | AMQP_NOWAIT)
+        $resource->setFlags(AMQP_NOPARAM | AMQP_DURABLE | AMQP_PASSIVE | AMQP_AUTODELETE | AMQP_EXCLUSIVE)
             ->shouldBeCalled();
         $resource->setName('queueName')->shouldBeCalled();
         $resource->setArguments(['arg1' => 'value1'])->shouldBeCalled();
@@ -453,24 +472,20 @@ class QueueTest extends \PHPUnit_Framework_TestCase
                 AMQP_NOPARAM, null
             ],
             [
-                [null, true, false, false, false, null],
+                [null, true, false, false, null],
                 AMQP_NOLOCAL, null
             ],
             [
-                [null, false, true, false, false, null],
+                [null, false, true, false, null],
                 AMQP_AUTOACK, null
             ],
             [
-                [null, false, false, true, false, null],
+                [null, false, false, true, null],
                 AMQP_EXCLUSIVE, null
             ],
             [
-                [null, false, false, false, true, null],
-                AMQP_NOWAIT, null
-            ],
-            [
-                [null, true, true, true, true, null],
-                AMQP_NOLOCAL | AMQP_AUTOACK | AMQP_EXCLUSIVE | AMQP_NOWAIT, null
+                [null, true, true, true, null],
+                AMQP_NOLOCAL | AMQP_AUTOACK | AMQP_EXCLUSIVE, null
             ]
         ];
     }
@@ -522,7 +537,6 @@ class QueueTest extends \PHPUnit_Framework_TestCase
         $options->isPassive()->willReturn(true);
         $options->isAutoDelete()->willReturn(true);
         $options->isExclusive()->willReturn(true);
-        $options->isNoWait()->willReturn(true);
         $options->getName()->willReturn('queueName');
         $options->getArguments()->willReturn(['arg1' => 'value1']);
         $options->isExclusive()->willReturn(true);

@@ -21,6 +21,18 @@ class QueueTest extends \PHPUnit_Framework_TestCase
         static::assertSame($options->reveal(), $queue->getOptions());
     }
 
+    public function testSetOptionsWithArray()
+    {
+        $options = ['name' => 'queueName'];
+
+        $queue = new Queue();
+
+        static::assertSame($queue, $queue->setOptions($options));
+        $queueOptions = $queue->getOptions();
+        static::assertInstanceOf(Options\QueueOptions::class, $queueOptions);
+        static::assertEquals('queueName', $queueOptions->getName());
+    }
+
     public function testGetDefaultMessageMapper()
     {
         $exchange = new Queue();
@@ -40,7 +52,6 @@ class QueueTest extends \PHPUnit_Framework_TestCase
         $options->isPassive()->willReturn(true);
         $options->isAutoDelete()->willReturn(true);
         $options->isExclusive()->willReturn(true);
-        $options->isNoWait()->willReturn(true);
         $options->getName()->willReturn('queueName');
         $options->getArguments()->willReturn(['arg1' => 'value1']);
         $options->isExclusive()->willReturn(true);
@@ -52,7 +63,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
             true,
             true,
             true,
-            true,
+            false,
             ['arg1' => 'value1']
         )->shouldBeCalled();
 
@@ -355,7 +366,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
 
         $messageMapper->toMessage(Argument::any())->shouldNotBeCalled();
 
-        $adapterChannel->basic_get('queueName', false)
+        $adapterChannel->basic_get('queueName', true)
             ->shouldBeCalled()
             ->willReturn(null);
         $channel->getResource()->willReturn($adapterChannel->reveal());
@@ -381,7 +392,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
 
         $messageMapper->toMessage($libMessage->reveal())->shouldBeCalled()->willReturn($message->reveal());
 
-        $adapterChannel->basic_get('queueName', false)
+        $adapterChannel->basic_get('queueName', true)
             ->shouldBeCalled()
             ->willReturn($libMessage->reveal());
         $channel->getResource()->willReturn($adapterChannel->reveal());
@@ -399,9 +410,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
      */
     public function testConsume($args, $libArgs)
     {
-        /** @var \Prophecy\Prophecy\ObjectProphecy|AMQPChannel $adapterChannel */
         $adapterChannel = $this->prophesize(AMQPChannel::class);
-        /** @var \Prophecy\Prophecy\ObjectProphecy|Channel $channel */
         $channel = $this->prophesize(Channel::class);
         $options = $this->getDefaultOptionsProphet();
         $libMessage = $this->prophesize(AMQPMessage::class);
@@ -409,15 +418,24 @@ class QueueTest extends \PHPUnit_Framework_TestCase
 
         $adapterChannel->basic_consume(
             'queueName',
+            $libArgs[3],
             $libArgs[0],
             $libArgs[1],
             $libArgs[2],
-            $libArgs[3],
-            $libArgs[4],
+            false,
             Argument::type(ConsumerCallback::class)
         )
             ->shouldBeCalled()
             ->willReturn($libMessage->reveal());
+
+        $adapterChannel->callbacks = ['foo', 'bar'];
+        $adapterChannel->wait()->shouldBeCalledTimes(count($adapterChannel->callbacks))
+            ->will(function () use ($adapterChannel) {
+                $callbacks = $adapterChannel->callbacks;
+                array_shift($callbacks);
+                $adapterChannel->callbacks = $callbacks;
+            });
+
         $channel->getResource()->willReturn($adapterChannel->reveal());
 
         $queue = new Queue();
@@ -429,7 +447,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
             
         };
 
-        $ret = $queue->consume($args[0], $args[1], $args[2], $args[3], $args[4], $callback);
+        $ret = $queue->consume($callback, $args[0], $args[1], $args[2], $args[3]);
 
         static::assertSame($queue, $ret);
     }
@@ -438,16 +456,16 @@ class QueueTest extends \PHPUnit_Framework_TestCase
     {
         return [
             [
-                [null, true, true, true, true],
-                ['', true, false, true, true],
+                [true, true, true, null],
+                [true, true, true, ''],
             ],
             [
-                ['consumerTag', true, true, true, true],
-                ['consumerTag', true, false, true, true],
+                [true, true, true, 'consumerTag'],
+                [true, true, true, 'consumerTag'],
             ],
             [
-                ['consumerTag', false, false, false, false],
-                ['consumerTag', false, true, false, false],
+                [false, false, false, 'consumerTag'],
+                [false, false, false, 'consumerTag'],
             ],
         ];
     }
@@ -499,7 +517,6 @@ class QueueTest extends \PHPUnit_Framework_TestCase
         $options->isPassive()->willReturn(true);
         $options->isAutoDelete()->willReturn(true);
         $options->isExclusive()->willReturn(true);
-        $options->isNoWait()->willReturn(true);
         $options->getName()->willReturn('queueName');
         $options->getArguments()->willReturn(['arg1' => 'value1']);
         $options->isExclusive()->willReturn(true);

@@ -5,6 +5,7 @@ namespace AMQPAL\Adapter\PhpAmqpLib;
 use PhpAmqpLib\Message\AMQPMessage;
 use AMQPAL\Adapter\ExchangeInterface;
 use AMQPAL\Options;
+use AMQPAL\Exception as BaseException;
 
 /**
  * Class Exchange
@@ -31,11 +32,16 @@ class Exchange implements ExchangeInterface
     }
 
     /**
-     * @param Options\ExchangeOptions $exchangeOptions
+     * @param Options\ExchangeOptions|\Traversable|array $exchangeOptions
      * @return $this
+     * @throws BaseException\BadMethodCallException
+     * @throws BaseException\InvalidArgumentException
      */
-    public function setOptions(Options\ExchangeOptions $exchangeOptions)
+    public function setOptions($exchangeOptions)
     {
+        if (!$exchangeOptions instanceof Options\ExchangeOptions) {
+            $exchangeOptions = new Options\ExchangeOptions($exchangeOptions);
+        }
         $this->options = $exchangeOptions;
         return $this;
     }

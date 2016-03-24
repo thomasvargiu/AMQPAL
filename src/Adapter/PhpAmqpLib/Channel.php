@@ -2,12 +2,13 @@
 
 namespace AMQPAL\Adapter\PhpAmqpLib;
 
-use PhpAmqpLib\Channel\AMQPChannel;
 use AMQPAL\Adapter\ChannelInterface;
 use AMQPAL\Adapter\ConnectionInterface;
 use AMQPAL\Adapter\ExchangeInterface;
 use AMQPAL\Adapter\QueueInterface;
+use AMQPAL\Exception;
 use AMQPAL\Options;
+use PhpAmqpLib\Channel\AMQPChannel;
 
 /**
  * Class Channel
@@ -63,6 +64,46 @@ class Channel implements ChannelInterface
     }
 
     /**
+     * Check the channel connection.
+     *
+     * @return bool Indicates whether the channel is connected.
+     */
+    public function isConnected()
+    {
+        return $this->getConnection()->isConnected();
+    }
+
+    /**
+     * Get the connection object in use
+     *
+     * @return Connection
+     */
+    public function getConnection()
+    {
+        return $this->connection;
+    }
+
+    /**
+     * @param Connection $connection
+     * @return $this
+     */
+    public function setConnection(Connection $connection)
+    {
+        $this->connection = $connection;
+        return $this;
+    }
+
+    /**
+     * Return internal channel ID
+     *
+     * @return integer
+     */
+    public function getChannelId()
+    {
+        return $this->getResource()->getChannelId();
+    }
+
+    /**
      * @return AMQPChannel
      */
     public function getResource()
@@ -79,26 +120,6 @@ class Channel implements ChannelInterface
         $this->resource = $resource;
 
         return $this;
-    }
-
-    /**
-     * Check the channel connection.
-     *
-     * @return bool Indicates whether the channel is connected.
-     */
-    public function isConnected()
-    {
-        return $this->getConnection()->isConnected();
-    }
-
-    /**
-     * Return internal channel ID
-     *
-     * @return integer
-     */
-    public function getChannelId()
-    {
-        return $this->getResource()->getChannelId();
     }
 
     /**
@@ -152,26 +173,6 @@ class Channel implements ChannelInterface
     }
 
     /**
-     * @param Connection $connection
-     * @return $this
-     */
-    public function setConnection(Connection $connection)
-    {
-        $this->connection = $connection;
-        return $this;
-    }
-
-    /**
-     * Get the connection object in use
-     *
-     * @return Connection
-     */
-    public function getConnection()
-    {
-        return $this->connection;
-    }
-
-    /**
      * Redeliver unacknowledged messages.
      *
      * @param bool $requeue
@@ -187,12 +188,18 @@ class Channel implements ChannelInterface
     /**
      * Create a new queue
      *
-     * @param Options\QueueOptions $options
+     * @param Options\QueueOptions|\Traversable|array $options
      * @return QueueInterface
+     * @throws Exception\BadMethodCallException
+     * @throws Exception\InvalidArgumentException
      */
-    public function createQueue(Options\QueueOptions $options)
+    public function createQueue($options)
     {
         $queue = clone $this->queuePrototype;
+
+        if (!$options instanceof Options\QueueOptions) {
+            $options = new Options\QueueOptions($options);
+        }
 
         $queue->setChannel($this);
         $queue->setOptions($options);
@@ -203,12 +210,18 @@ class Channel implements ChannelInterface
     /**
      * Create a new exchange
      *
-     * @param Options\ExchangeOptions $options
+     * @param Options\ExchangeOptions|\Traversable|array $options
      * @return ExchangeInterface
+     * @throws Exception\BadMethodCallException
+     * @throws Exception\InvalidArgumentException
      */
-    public function createExchange(Options\ExchangeOptions $options)
+    public function createExchange($options)
     {
         $exchange = clone $this->exchangePrototype;
+
+        if (!$options instanceof Options\ExchangeOptions) {
+            $options = new Options\ExchangeOptions($options);
+        }
 
         $exchange->setChannel($this);
         $exchange->setOptions($options);

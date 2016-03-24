@@ -7,6 +7,7 @@ use AMQPAL\Adapter\ConsumerInterface;
 use AMQPAL\Adapter\Message;
 use AMQPAL\Adapter\QueueInterface;
 use AMQPAL\Options;
+use AMQPAL\Exception as BaseException;
 
 /**
  * Class Queue
@@ -44,11 +45,16 @@ class Queue implements QueueInterface
     }
 
     /**
-     * @param Options\QueueOptions $options
+     * @param Options\QueueOptions|\Traversable|array $options
      * @return $this
+     * @throws BaseException\BadMethodCallException
+     * @throws BaseException\InvalidArgumentException
      */
-    public function setOptions(Options\QueueOptions $options)
+    public function setOptions($options)
     {
+        if (!$options instanceof Options\QueueOptions) {
+            $options = new Options\QueueOptions($options);
+        }
         $this->options = $options;
         $this->configureQueue();
         return $this;
@@ -74,9 +80,6 @@ class Queue implements QueueInterface
         }
         if ($options->isExclusive()) {
             $flags |= AMQP_EXCLUSIVE;
-        }
-        if ($options->isNoWait()) {
-            $flags |= AMQP_NOWAIT;
         }
 
         $queue->setName($options->getName());
@@ -349,27 +352,25 @@ class Queue implements QueueInterface
     }
 
     /**
-     * Consume messages from a queue.
+     * Consume messages from a queue (blocking function).
      *
-     * @param string                          $consumerTag  A string describing this consumer. Used
-     *                                                      for canceling subscriptions with cancel().
+     * @param callback|ConsumerInterface|null $callback     A callback function to which the
+     *                                                      consumed message will be passed.
      * @param bool                            $noLocal
      * @param bool                            $autoAck
      * @param bool                            $exclusive
-     * @param bool                            $nowait       No wait for a reply.
-     * @param callback|ConsumerInterface|null $callback     A callback function to which the
-     *                                                      consumed message will be passed.
+     * @param string                          $consumerTag  A string describing this consumer. Used
+     *                                                      for canceling subscriptions with cancel().
      * @return $this
      * @throws \AMQPChannelException
      * @throws \AMQPConnectionException
      */
     public function consume(
-        $consumerTag = null,
+        callable $callback = null,
         $noLocal = false,
         $autoAck = false,
         $exclusive = false,
-        $nowait = false,
-        callable $callback = null
+        $consumerTag = null
     ) {
         $consumerCallback = null;
         if ($callback) {
@@ -386,9 +387,6 @@ class Queue implements QueueInterface
         }
         if ($exclusive) {
             $flags |= AMQP_EXCLUSIVE;
-        }
-        if ($nowait) {
-            $flags |= AMQP_NOWAIT;
         }
 
         $this->getResource()->consume($consumerCallback, $flags, $consumerTag);

@@ -11,8 +11,12 @@
         backupGlobals="false"
         syntaxCheck="true"
 >
-    <testsuite name="AMQPAL tests">
+    <testsuite name="AMQPAL unit tests">
         <directory suffix="Test.php">./tests/unit</directory>
+    </testsuite>
+
+    <testsuite name="AMQPAL integration tests">
+        <directory suffix="Test.php">./tests/functional</directory>
     </testsuite>
 
     <filter>

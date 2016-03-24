@@ -73,16 +73,16 @@ interface ChannelInterface
     /**
      * Create a new queue
      *
-     * @param Options\QueueOptions $options
+     * @param Options\QueueOptions|\Traversable|array $options
      * @return QueueInterface
      */
-    public function createQueue(Options\QueueOptions $options);
+    public function createQueue($options);
 
     /**
      * Create a new exchange
      *
-     * @param Options\ExchangeOptions $options
+     * @param Options\ExchangeOptions|\Traversable|array $options
      * @return ExchangeInterface
      */
-    public function createExchange(Options\ExchangeOptions $options);
+    public function createExchange($options);
 }

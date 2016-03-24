@@ -1,6 +1,9 @@
 language: php
 
-sudo: true
+sudo: required
+
+services:
+  - docker
 
 php:
   - 5.5
@@ -9,19 +12,34 @@ php:
 
 env:
   global:
-    - LIBRABBITMQ_VERSION=v0.5.2 PHP_AMQP_VERSION=v1.4.0
+    - LIBRABBITMQ_VERSION=v0.6.0 PHP_AMQP_VERSION=v1.7.0alpha2
   matrix:
-    - DEPENDENCIES=""
-    - DEPENDENCIES="--prefer-lowest --prefer-stable"
+    - DEPENDENCIES="" LIBRABBITMQ_VERSION=v0.6.0 PHP_AMQP_VERSION=v1.6.0
+    - DEPENDENCIES="--prefer-lowest --prefer-stable" LIBRABBITMQ_VERSION=v0.6.0 PHP_AMQP_VERSION=v1.6.0
+    - DEPENDENCIES="" LIBRABBITMQ_VERSION=v0.6.0 PHP_AMQP_VERSION=v1.7.0alpha2
+    - DEPENDENCIES="--prefer-lowest --prefer-stable" LIBRABBITMQ_VERSION=v0.6.0 PHP_AMQP_VERSION=v1.7.0alpha2
+
+matrix:
+  exclude:
+    - php: 5.6
+      env: DEPENDENCIES="" LIBRABBITMQ_VERSION=v0.6.0 PHP_AMQP_VERSION=v1.6.0
+    - php: 5.6
+      env: DEPENDENCIES="--prefer-lowest --prefer-stable" LIBRABBITMQ_VERSION=v0.6.0 PHP_AMQP_VERSION=v1.6.0
+    - php: 7.0
+      env: DEPENDENCIES="" LIBRABBITMQ_VERSION=v0.6.0 PHP_AMQP_VERSION=v1.6.0
+    - php: 7.0
+      env: DEPENDENCIES="--prefer-lowest --prefer-stable" LIBRABBITMQ_VERSION=v0.6.0 PHP_AMQP_VERSION=v1.6.0
 
 cache:
   directories:
-  - $HOME/.composer/cache
+    - $HOME/.composer/cache
 
 before_script:
+  - sh provision/install_deps.sh
   - echo "extension = amqp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - composer self-update
   - composer update --prefer-source $DEPENDENCIES
+  - docker-compose --file ./docker-compose.yml.dist up -d
 
 script:
   - ./vendor/bin/phpunit --coverage-clover ./clover.xml
@@ -30,3 +48,8 @@ script:
 after_script:
   - if [ "$TRAVIS_PHP_VERSION" = '7.0' ] ; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover ./clover.xml; fi;
 
+addons:
+  apt:
+    packages:
+      - cmake
+      - valgrind
