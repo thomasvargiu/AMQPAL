@@ -4,5 +4,5 @@ rabbitmq:
   environment:
     RABBITMQ_DEFAULT_VHOST: test
   ports:
-    - "5672"
-    - "15672"
+    - "5678:5672"
+    - "15678:15672"
