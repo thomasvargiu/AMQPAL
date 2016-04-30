@@ -9,11 +9,6 @@ namespace AMQPAL\Adapter;
  */
 interface ConnectionInterface
 {
-    /**
-     * @param mixed $resource
-     * @return ChannelInterface
-     */
-    public function createChannel($resource = null);
         
     /**
      * Establish a connection with the AMQP broker.
