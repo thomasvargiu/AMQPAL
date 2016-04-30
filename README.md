@@ -37,7 +37,8 @@ $options = [
 $factory = new Adapter\AdapterFactory();
 $adapter = $factory->createAdapter($options);
 
-$channel = $adapter->createChannel();
+$connection = $adapter->getConnection();
+$channel = $connection->createChannel();
 
 /*
  * Creating exchange...

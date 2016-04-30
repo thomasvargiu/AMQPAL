@@ -4,19 +4,18 @@ namespace AMQPAL\Adapter\PhpAmqpLib;
 
 use AMQPAL\Adapter\PhpAmqpLib\Options\ConnectionOptions;
 use PhpAmqpLib\Connection\AbstractConnection;
+use PhpAmqpLib\Channel\AMQPChannel;
+use AMQPAL\Options;
+use Prophecy\Argument;
 
 class ConnectionTest extends \PHPUnit_Framework_TestCase
 {
 
     public function testConstructorWithOptions()
     {
-        /** @var AbstractConnection|\Prophecy\Prophecy\ObjectProphecy $adapterConnection */
         $adapterConnection = $this->prophesize(AbstractConnection::class);
-        /** @var ConnectionOptions|\Prophecy\Prophecy\ObjectProphecy $options */
         $options = $this->prophesize(ConnectionOptions::class);
-        /** @var Factory\ConnectionFactoryFactory|\Prophecy\Prophecy\ObjectProphecy $connectionFactoryFactory */
         $connectionFactoryFactory = $this->prophesize(Factory\ConnectionFactoryFactory::class);
-        /** @var Factory\ConnectionFactoryInterface|\Prophecy\Prophecy\ObjectProphecy $connectionFactory */
         $connectionFactory = $this->prophesize(Factory\ConnectionFactoryInterface::class);
 
         $connectionFactory->createConnection($options->reveal())->willReturn($adapterConnection->reveal());
@@ -34,9 +33,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
 
     public function testSetOptions()
     {
-        /** @var AbstractConnection|\Prophecy\Prophecy\ObjectProphecy $adapterConnection */
         $adapterConnection = $this->prophesize(AbstractConnection::class);
-        /** @var ConnectionOptions|\Prophecy\Prophecy\ObjectProphecy $options */
         $options = $this->prophesize(ConnectionOptions::class);
 
         $connection = new Connection($adapterConnection->reveal());
@@ -46,7 +43,6 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
 
     public function testSetOptionsArray()
     {
-        /** @var AbstractConnection|\Prophecy\Prophecy\ObjectProphecy $adapterConnection */
         $adapterConnection = $this->prophesize(AbstractConnection::class);
 
         $options = [
@@ -63,7 +59,6 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
 
     public function testIsConnected()
     {
-        /** @var AbstractConnection|\Prophecy\Prophecy\ObjectProphecy $adapterConnection */
         $adapterConnection = $this->prophesize(AbstractConnection::class);
         $adapterConnection->isConnected()->shouldBeCalled()->willReturn(true);
 
@@ -75,7 +70,6 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
 
     public function testConnect()
     {
-        /** @var AbstractConnection|\Prophecy\Prophecy\ObjectProphecy $adapterConnection */
         $adapterConnection = $this->prophesize(AbstractConnection::class);
 
         $adapterConnection->isConnected()->shouldBeCalled()->willReturn(false);
@@ -89,7 +83,6 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
 
     public function testReconnect()
     {
-        /** @var AbstractConnection|\Prophecy\Prophecy\ObjectProphecy $adapterConnection */
         $adapterConnection = $this->prophesize(AbstractConnection::class);
 
         $adapterConnection->reconnect()->shouldBeCalled();
@@ -102,7 +95,6 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
 
     public function testDisconnect()
     {
-        /** @var AbstractConnection|\Prophecy\Prophecy\ObjectProphecy $adapterConnection */
         $adapterConnection = $this->prophesize(AbstractConnection::class);
 
         $adapterConnection->close()->shouldBeCalled();
@@ -111,5 +103,59 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
 
         $result = $connection->disconnect();
         static::assertInstanceOf(Connection::class, $result);
+    }
+
+    public function testCreateChannelWithResource()
+    {
+        $adapterConnection = $this->prophesize(AbstractConnection::class);
+        $channelPrototype = $this->prophesize(Channel::class);
+        $channelResource = $this->prophesize(AMQPChannel::class);
+
+        $connection = new Connection($adapterConnection->reveal());
+        $connection->registerChannel($channelPrototype->reveal());
+
+        $channelPrototype->setResource($channelResource->reveal())->shouldBeCalled();
+        $channelPrototype->setConnection($connection)->shouldBeCalled();
+
+        $result = $connection->createChannel($channelResource->reveal());
+        static::assertInstanceOf(Channel::class, $result);
+    }
+
+    public function testCreateChannel()
+    {
+        $adapterConnection = $this->prophesize(AbstractConnection::class);
+        $channelPrototype = $this->prophesize(Channel::class);
+        $channelResource = $this->prophesize(AMQPChannel::class);
+
+        $adapterConnection->isConnected()->shouldBeCalled()->willReturn(true);
+        $adapterConnection->channel()->shouldBeCalled()->willReturn($channelResource->reveal());
+        $channelPrototype->setResource($channelResource->reveal())->shouldBeCalled();
+
+        $connection = new Connection($adapterConnection->reveal());
+        $connection->registerChannel($channelPrototype->reveal());
+        $channelPrototype->setConnection($connection)->shouldBeCalled();
+
+        $channel = $connection->createChannel();
+        static::assertInstanceOf(Channel::class, $channel);
+    }
+
+    public function testCreateChannelWithConnect()
+    {
+        $adapterConnection = $this->prophesize(AbstractConnection::class);
+        $channelPrototype = $this->prophesize(Channel::class);
+        $channelResource = $this->prophesize(AMQPChannel::class);
+
+        $adapterConnection->isConnected()->shouldBeCalled()->willReturn(false);
+        $adapterConnection->reconnect()->shouldBeCalled();
+        $adapterConnection->channel()->shouldBeCalled()->willReturn($channelResource->reveal());
+        $channelPrototype->setResource($channelResource->reveal())->shouldBeCalled();
+
+        $connection = new Connection($adapterConnection->reveal());
+        $connection->registerChannel($channelPrototype->reveal());
+        $channelPrototype->setConnection($connection)->shouldBeCalled();
+        $channelPrototype->setConnection($connection)->shouldBeCalled();
+
+        $channel = $connection->createChannel();
+        static::assertInstanceOf(Channel::class, $channel);
     }
 }

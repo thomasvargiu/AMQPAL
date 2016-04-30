@@ -45,4 +45,28 @@ class ConsumerCallbackTest extends \PHPUnit_Framework_TestCase
 
         $consumerCallback($libMessage->reveal());
     }
+
+    public function testInvokeWithCancel()
+    {
+        $queue = $this->prophesize(Queue::class);
+        $callable = $this->prophesize(ConsumerInterface::class);
+        $libMessage = $this->prophesize(AMQPMessage::class);
+        $message = $this->prophesize(Message::class);
+        $messageMapper = $this->prophesize(MessageMapper::class);
+
+        $messageMapper->toMessage($libMessage->reveal())
+            ->shouldBeCalled()
+            ->willReturn($message);
+
+        $callable->__invoke($message->reveal(), $queue->reveal())
+            ->shouldBeCalled()->willReturn(false);
+
+        $libMessage->delivery_info = ['consumer_tag' => 'foo'];
+        $queue->cancel('foo')->shouldBeCalled();
+
+        $consumerCallback = new ConsumerCallback($callable->reveal(), $queue->reveal());
+        $consumerCallback->setMessageMapper($messageMapper->reveal());
+
+        $consumerCallback($libMessage->reveal());
+    }
 }

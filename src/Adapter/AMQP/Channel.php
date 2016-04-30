@@ -242,10 +242,6 @@ class Channel implements ChannelInterface
             $exchange->setResource($this->createExchangeResource());
         }
 
-        if (!$options instanceof Options\ExchangeOptions) {
-            $options = new Options\ExchangeOptions($options);
-        }
-
         $exchange->setChannel($this);
         $exchange->setOptions($options);
 

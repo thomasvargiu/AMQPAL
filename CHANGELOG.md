@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## v0.3.0 (2016-04-30)
+
+### Added:
+
+- `ConnectionInterface::createChannel()` added
+
+### Changed:
+
+- Adapters no long implements `createChannel` method. Moved to `ConnectionInterface`
+
+### Removed
+
+*Nothing*
+
+
 ## v0.2.0 (2016-03-26)
 
 ### Added:

@@ -17,9 +17,4 @@ interface AdapterInterface
      * @return ConnectionInterface
      */
     public function getConnection();
-    /**
-     * @param resource|null $resource
-     * @return ChannelInterface
-     */
-    public function createChannel($resource = null);
 }

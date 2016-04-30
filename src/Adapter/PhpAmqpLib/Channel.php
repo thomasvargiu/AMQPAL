@@ -197,10 +197,6 @@ class Channel implements ChannelInterface
     {
         $queue = clone $this->queuePrototype;
 
-        if (!$options instanceof Options\QueueOptions) {
-            $options = new Options\QueueOptions($options);
-        }
-
         $queue->setChannel($this);
         $queue->setOptions($options);
 
@@ -218,10 +214,6 @@ class Channel implements ChannelInterface
     public function createExchange($options)
     {
         $exchange = clone $this->exchangePrototype;
-
-        if (!$options instanceof Options\ExchangeOptions) {
-            $options = new Options\ExchangeOptions($options);
-        }
 
         $exchange->setChannel($this);
         $exchange->setOptions($options);

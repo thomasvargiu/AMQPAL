@@ -9,6 +9,10 @@ namespace AMQPAL\Adapter;
  */
 interface ConnectionInterface
 {
+    /**
+     * @return ChannelInterface
+     */
+    public function createChannel();
         
     /**
      * Establish a connection with the AMQP broker.

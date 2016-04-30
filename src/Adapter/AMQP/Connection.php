@@ -23,15 +23,20 @@ class Connection implements ConnectionInterface
      * @var ConnectionOptions
      */
     protected $options;
+    /**
+     * @var Channel
+     */
+    protected $channelPrototype;
 
     /**
      * Connection constructor.
      *
      * @param AMQPConnection|ConnectionOptions $connection
+     * @param Channel $channelPrototype
      * @throws Exception\BadMethodCallException
      * @throws Exception\InvalidArgumentException
      */
-    public function __construct($connection)
+    public function __construct($connection, Channel $channelPrototype = null)
     {
         if (!$connection instanceof AMQPConnection) {
             $this->setOptions($connection);
@@ -39,6 +44,7 @@ class Connection implements ConnectionInterface
         }
 
         $this->setResource($connection);
+        $this->registerChannel($channelPrototype ?: new Channel());
     }
 
     /**
@@ -173,5 +179,46 @@ class Connection implements ConnectionInterface
     public function isConnected()
     {
         return $this->getResource()->isConnected();
+    }
+
+    /**
+     * @param \AMQPChannel $resource
+     * @return Channel
+     * @throws \AMQPConnectionException
+     */
+    public function createChannel($resource = null)
+    {
+        $channel = clone $this->channelPrototype;
+
+        $channel->setConnection($this);
+
+        if ($resource instanceof \AMQPChannel) {
+            $channel->setResource($resource);
+        } else {
+            if (!$this->isConnected()) {
+                $this->connect();
+            }
+            $channel->setResource($this->createChannelResource());
+        }
+
+        return $channel;
+    }
+
+    /**
+     * @param Channel $channel
+     */
+    public function registerChannel(Channel $channel)
+    {
+        $this->channelPrototype = $channel;
+    }
+
+    /**
+     * @return \AMQPChannel
+     * @throws \AMQPConnectionException
+     * @codeCoverageIgnore
+     */
+    protected function createChannelResource()
+    {
+        return new \AMQPChannel($this->getResource());
     }
 }

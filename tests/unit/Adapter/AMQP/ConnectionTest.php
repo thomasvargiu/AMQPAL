@@ -9,7 +9,6 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
 
     public function testConstructorWithOptions()
     {
-        /** @var ConnectionOptions|\Prophecy\Prophecy\ObjectProphecy $options */
         $options = $this->prophesize(ConnectionOptions::class);
 
         $options->getHost()->willReturn('hostname');
@@ -65,7 +64,6 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
     public function testConnect()
     {
         $adapterConnection = $this->prophesize(\AMQPConnection::class);
-        /** @var ConnectionOptions|\Prophecy\Prophecy\ObjectProphecy $options */
         $options = $this->prophesize(ConnectionOptions::class);
         $options->isPersistent()->willReturn(false);
 
@@ -81,7 +79,6 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
     public function testConnectPersistent()
     {
         $adapterConnection = $this->prophesize(\AMQPConnection::class);
-        /** @var ConnectionOptions|\Prophecy\Prophecy\ObjectProphecy $options */
         $options = $this->prophesize(ConnectionOptions::class);
         $options->isPersistent()->willReturn(true);
 
@@ -97,7 +94,6 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
     public function testReconnect()
     {
         $adapterConnection = $this->prophesize(\AMQPConnection::class);
-        /** @var ConnectionOptions|\Prophecy\Prophecy\ObjectProphecy $options */
         $options = $this->prophesize(ConnectionOptions::class);
         $options->isPersistent()->willReturn(false);
 
@@ -113,7 +109,6 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
     public function testReconnectPersistent()
     {
         $adapterConnection = $this->prophesize(\AMQPConnection::class);
-        /** @var ConnectionOptions|\Prophecy\Prophecy\ObjectProphecy $options */
         $options = $this->prophesize(ConnectionOptions::class);
         $options->isPersistent()->willReturn(true);
 
@@ -129,7 +124,6 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
     public function testDisconnect()
     {
         $adapterConnection = $this->prophesize(\AMQPConnection::class);
-        /** @var ConnectionOptions|\Prophecy\Prophecy\ObjectProphecy $options */
         $options = $this->prophesize(ConnectionOptions::class);
         $options->isPersistent()->willReturn(false);
 
@@ -145,7 +139,6 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
     public function testDisconnectPersistent()
     {
         $adapterConnection = $this->prophesize(\AMQPConnection::class);
-        /** @var ConnectionOptions|\Prophecy\Prophecy\ObjectProphecy $options */
         $options = $this->prophesize(ConnectionOptions::class);
         $options->isPersistent()->willReturn(true);
 
@@ -156,5 +149,75 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
 
         $result = $connection->disconnect();
         static::assertInstanceOf(Connection::class, $result);
+    }
+
+    public function testCreateChannelWithResource()
+    {
+        $adapterConnection = $this->prophesize(\AMQPConnection::class);
+        $channelPrototype = $this->prophesize(Channel::class);
+        $channelResource = $this->prophesize(\AMQPChannel::class);
+
+        $connection = new Connection($adapterConnection->reveal());
+        $connection->registerChannel($channelPrototype->reveal());
+
+        $channelPrototype->setResource($channelResource->reveal())->shouldBeCalled();
+        $channelPrototype->setConnection($connection)->shouldBeCalled();
+
+        $result = $connection->createChannel($channelResource->reveal());
+        static::assertInstanceOf(Channel::class, $result);
+    }
+
+    public function testCreateChannel()
+    {
+        $adapterConnection = $this->prophesize(\AMQPConnection::class);
+        $channelPrototype = $this->prophesize(Channel::class);
+        $channelResource = $this->prophesize(\AMQPChannel::class);
+
+        $adapterConnection->isConnected()->shouldBeCalled()->willReturn(true);
+        $channelPrototype->setResource($channelResource->reveal())->shouldBeCalled();
+
+        $connection = static::getMockBuilder(Connection::class)
+            ->setMethods(['createChannelResource'])
+            ->setConstructorArgs([$adapterConnection->reveal(), $channelPrototype->reveal()])
+            ->getMock();
+
+        $connection->registerChannel($channelPrototype->reveal());
+        $channelPrototype->setConnection($connection)->shouldBeCalled();
+
+        $connection->expects(static::once())
+            ->method('createChannelResource')
+            ->willReturn($channelResource->reveal());
+
+        $channel = $connection->createChannel();
+        static::assertInstanceOf(Channel::class, $channel);
+    }
+
+    public function testCreateChannelWithConnect()
+    {
+        $adapterConnection = $this->prophesize(\AMQPConnection::class);
+        $channelPrototype = $this->prophesize(Channel::class);
+        $channelResource = $this->prophesize(\AMQPChannel::class);
+
+        $adapterConnection->isConnected()->shouldBeCalled()->willReturn(false);
+        $channelPrototype->setResource($channelResource->reveal())->shouldBeCalled();
+
+        $connection = static::getMockBuilder(Connection::class)
+            ->setMethods(['createChannelResource', 'connect'])
+            ->setConstructorArgs([$adapterConnection->reveal(), $channelPrototype->reveal()])
+            ->getMock();
+
+        $connection->registerChannel($channelPrototype->reveal());
+        $channelPrototype->setConnection($connection)->shouldBeCalled();
+
+        $connection->expects(static::once())
+            ->method('connect')
+            ->willReturn($connection);
+
+        $connection->expects(static::once())
+            ->method('createChannelResource')
+            ->willReturn($channelResource->reveal());
+
+        $channel = $connection->createChannel();
+        static::assertInstanceOf(Channel::class, $channel);
     }
 }

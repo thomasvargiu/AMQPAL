@@ -75,7 +75,7 @@ abstract class AbstractAdapterTestSuite extends \PHPUnit_Framework_TestCase
      */
     public function testCreateExchange(array $exchangeOptionsArray)
     {
-        $channel = $this->adapter->createChannel();
+        $channel = $this->adapter->getConnection()->createChannel();
         static::assertInstanceOf(ChannelInterface::class, $channel);
 
         $exchangeOptions = new ExchangeOptions($exchangeOptionsArray);
@@ -100,7 +100,7 @@ abstract class AbstractAdapterTestSuite extends \PHPUnit_Framework_TestCase
      */
     public function testCreateQueue(array $queueOptionsArray)
     {
-        $channel = $this->adapter->createChannel();
+        $channel = $this->adapter->getConnection()->createChannel();
         static::assertInstanceOf(ChannelInterface::class, $channel);
 
         $queueOptions = new QueueOptions($queueOptionsArray);
@@ -120,7 +120,7 @@ abstract class AbstractAdapterTestSuite extends \PHPUnit_Framework_TestCase
 
     public function testPublishAndGet()
     {
-        $channel = $this->adapter->createChannel();
+        $channel = $this->adapter->getConnection()->createChannel();
         $exchangeOptions = new ExchangeOptions([
             'name' => 'exchange-name',
             'type' => 'direct'
@@ -173,7 +173,7 @@ abstract class AbstractAdapterTestSuite extends \PHPUnit_Framework_TestCase
 
     public function testPublishAndGetWithAutoAck()
     {
-        $channel = $this->adapter->createChannel();
+        $channel = $this->adapter->getConnection()->createChannel();
         $exchangeOptions = new ExchangeOptions([
             'name' => 'exchange-name',
             'type' => 'direct'
@@ -227,7 +227,7 @@ abstract class AbstractAdapterTestSuite extends \PHPUnit_Framework_TestCase
 
     public function testConsumeWithAck()
     {
-        $channel = $this->adapter->createChannel();
+        $channel = $this->adapter->getConnection()->createChannel();
         $exchangeOptions = new ExchangeOptions([
             'name' => 'exchange-name',
             'type' => 'direct'
@@ -284,7 +284,7 @@ abstract class AbstractAdapterTestSuite extends \PHPUnit_Framework_TestCase
 
     public function testConsumeWithAutoAck()
     {
-        $channel = $this->adapter->createChannel();
+        $channel = $this->adapter->getConnection()->createChannel();
         $exchangeOptions = new ExchangeOptions([
             'name' => 'exchange-name',
             'type' => 'direct'
@@ -340,7 +340,7 @@ abstract class AbstractAdapterTestSuite extends \PHPUnit_Framework_TestCase
 
     public function testConsumeWithAutoRejectAndRequeue()
     {
-        $channel = $this->adapter->createChannel();
+        $channel = $this->adapter->getConnection()->createChannel();
         $exchangeOptions = new ExchangeOptions([
             'name' => 'exchange-name',
             'type' => 'direct'

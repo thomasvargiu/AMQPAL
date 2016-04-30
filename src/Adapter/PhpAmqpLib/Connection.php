@@ -6,6 +6,7 @@ use AMQPAL\Adapter\Exception;
 use AMQPAL\Adapter\ConnectionInterface;
 use AMQPAL\Adapter\PhpAmqpLib\Options\ConnectionOptions;
 use PhpAmqpLib\Connection\AbstractConnection;
+use PhpAmqpLib\Channel\AMQPChannel as LibChannel;
 use Traversable;
 
 /**
@@ -23,16 +24,21 @@ class Connection implements ConnectionInterface
      * @var ConnectionOptions
      */
     protected $options;
+    /**
+     * @var Channel
+     */
+    protected $channelPrototype;
 
     /**
      * Connection constructor.
      *
      * @param AbstractConnection|ConnectionOptions $connection
+     * @param Channel $channelPrototype
      * @throws Exception\RuntimeException
      * @throws Exception\InvalidArgumentException
      * @throws Exception\BadMethodCallException
      */
-    public function __construct($connection)
+    public function __construct($connection, Channel $channelPrototype = null)
     {
         if (!$connection instanceof AbstractConnection) {
             $this->setOptions($connection);
@@ -40,6 +46,7 @@ class Connection implements ConnectionInterface
         }
 
         $this->setResource($connection);
+        $this->registerChannel($channelPrototype ?: new Channel());
     }
 
     /**
@@ -53,6 +60,8 @@ class Connection implements ConnectionInterface
     /**
      * @param ConnectionOptions|Traversable|array $options
      * @return $this
+     * @throws \AMQPAL\Exception\InvalidArgumentException
+     * @throws \AMQPAL\Exception\BadMethodCallException
      * @throws Exception\InvalidArgumentException
      * @throws Exception\BadMethodCallException
      */
@@ -147,5 +156,37 @@ class Connection implements ConnectionInterface
     public function isConnected()
     {
         return $this->resource->isConnected();
+    }
+
+    /**
+     * @param Channel $channel
+     */
+    public function registerChannel(Channel $channel)
+    {
+        $this->channelPrototype = $channel;
+    }
+
+    /**
+     * @param LibChannel $resource
+     * @return Channel
+     * @throws Exception\RuntimeException
+     * @throws Exception\InvalidArgumentException
+     */
+    public function createChannel($resource = null)
+    {
+        $channel = clone $this->channelPrototype;
+
+        $channel->setConnection($this);
+
+        if ($resource instanceof LibChannel) {
+            $channel->setResource($resource);
+        } else {
+            if (!$this->isConnected()) {
+                $this->connect();
+            }
+            $channel->setResource($this->getResource()->channel());
+        }
+
+        return $channel;
     }
 }
