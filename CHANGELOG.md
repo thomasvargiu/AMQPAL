@@ -1,10 +1,26 @@
 # CHANGELOG
 
+## v0.3.1 (2016-05-01)
+
+### Added:
+
+- Added `QueueInterface::getOptions()`
+- Added `ExchangeInterface::getOptions()`
+
+### Changed:
+
+*Nothing*
+
+### Removed
+
+*Nothing*
+
+
 ## v0.3.0 (2016-04-30)
 
 ### Added:
 
-- `ConnectionInterface::createChannel()` added
+- Added `ConnectionInterface::createChannel()`
 
 ### Changed:
 

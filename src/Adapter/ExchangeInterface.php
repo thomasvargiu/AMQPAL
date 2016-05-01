@@ -11,6 +11,10 @@ use AMQPAL\Options;
  */
 interface ExchangeInterface
 {
+    /**
+     * @return Options\ExchangeOptions
+     */
+    public function getOptions();
 
     /**
      * Declare a new exchange on the broker.

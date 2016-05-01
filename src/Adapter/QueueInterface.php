@@ -13,6 +13,11 @@ interface QueueInterface
 {
 
     /**
+     * @return Options\QueueOptions
+     */
+    public function getOptions();
+
+    /**
      * Declare a new queue on the broker.
      *
      * @return $this
